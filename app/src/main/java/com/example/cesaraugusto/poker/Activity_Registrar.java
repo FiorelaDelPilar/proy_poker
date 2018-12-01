@@ -40,6 +40,14 @@ public class Activity_Registrar extends AppCompatActivity {
 
 
     @Override
+
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity__registrar);
@@ -60,6 +68,27 @@ public class Activity_Registrar extends AppCompatActivity {
                  user.put("DNI", userDni.getText().toString());
                  user.put("E-mail", userEmail.getText().toString());
 
+                 mAuth.createUserWithEmailAndPassword(userEmail.getText().toString(), userPassword.getText().toString())
+                         .addOnCompleteListener(Activity_Registrar.this, new OnCompleteListener<AuthResult>() {
+                             @Override
+                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                 if (task.isSuccessful()) {
+                                     // Sign in success, update UI with the signed-in user's information
+                                     Log.d(TAG, "createUserWithEmail:success");
+                                     FirebaseUser user = mAuth.getCurrentUser();
+                                     //updateUI(user);
+                                 } else {
+                                     // If sign in fails, display a message to the user.
+                                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                     Toast.makeText(Activity_Registrar.this, "Authentication failed.",
+                                             Toast.LENGTH_SHORT).show();
+                                     //updateUI(null);
+                                 }
+
+                                 // ...
+                             }
+                         });
+
                  // Add a new document with a generated ID
                  db.collection("users")
                          .add(user)
@@ -76,25 +105,15 @@ public class Activity_Registrar extends AppCompatActivity {
                              }
                          });
 
-                /*
-                // Create a new user with a first and last name
-                Map<String, Object> user = new HashMap<>();
-                user.put("Nombre", userName);
-                user.put("Apellido", userLastName);
-                user.put("Celular", userPhone);
-                user.put("Contraseña", userPassword);
-                user.put("DNI", userDni);
-                user.put("E-mail", userEmail);
 
+
+                /*
                 if (validate()){
                     String user_email = userEmail.getText().toString().trim();
                     String user_password = userPassword.getText().toString().trim();
-
-
                     mAuth.createUserWithEmailAndPassword(user_email,user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
@@ -107,7 +126,6 @@ public class Activity_Registrar extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
                                 updateUI(null);
                             }
-
                         }
                     }
                     );
@@ -161,4 +179,6 @@ public class Activity_Registrar extends AppCompatActivity {
         }
         return result;
     }
+
+
 }

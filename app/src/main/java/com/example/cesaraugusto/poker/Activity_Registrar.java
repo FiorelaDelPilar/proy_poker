@@ -50,6 +50,7 @@ public class Activity_Registrar extends AppCompatActivity {
         regButton.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
+                 //UN COMENTARIO DE PRUEBA DE JEFF
                  // Create a new user with a first and last name
                  Map<String, Object> user = new HashMap<>();
                  user.put("Nombre", userName.getText().toString());
